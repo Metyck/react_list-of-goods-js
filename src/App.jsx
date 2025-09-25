@@ -57,20 +57,6 @@ function getSortedGoods(currGoods, initialGoods, sortField, reverseField) {
   return preparedGoods;
 }
 
-function compareFields(field1, field2) {
-  if (field1.length !== field2.length) {
-    return false;
-  }
-
-  for (let i = 0; i < field1.length; i += i + 1) {
-    if (field1[i] !== field2[i]) {
-      return false;
-    }
-  }
-
-  return true;
-}
-
 export const App = () => {
   const [sortField, setSortField] = useState('');
   const [reverseField, setReverseField] = useState(false);
@@ -119,7 +105,7 @@ export const App = () => {
           Reverse
         </button>
 
-        {compareFields(initialGoods, currGoods) === false ? (
+        {sortField || reverseField ? (
           <button
             type="button"
             className="button is-danger is-light"
