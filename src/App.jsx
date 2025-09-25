@@ -20,34 +20,34 @@ const SORT_BY_ALPHABET = 'Sort alphabetically';
 const SORT_BY_LENGTH = 'Sort by length';
 
 function getSortedGoods(currGoods, initialGoods, sortField, reverseField) {
-  const preparedGoods = [...currGoods];
+  const preparedGoods = currGoods;
 
   if (sortField === '' && reverseField === false) {
     return initialGoods;
   }
 
-  const alphabetically = [...preparedGoods].sort((good1, good2) => {
+  const sortAlphabetically = [...preparedGoods].sort((good1, good2) => {
     return good1.localeCompare(good2);
   });
 
-  const lenghtSorted = [...alphabetically].sort((good1, good2) => {
+  const sortByLength = [...sortAlphabetically].sort((good1, good2) => {
     return good1.length - good2.length;
   });
 
   if (sortField === SORT_BY_ALPHABET) {
     if (reverseField) {
-      return alphabetically.reverse();
+      return sortAlphabetically.reverse();
     }
 
-    return alphabetically;
+    return sortAlphabetically;
   }
 
   if (sortField === SORT_BY_LENGTH) {
     if (reverseField) {
-      return lenghtSorted.reverse();
+      return sortByLength.reverse();
     }
 
-    return lenghtSorted;
+    return sortByLength;
   }
 
   if (reverseField) {
@@ -57,11 +57,25 @@ function getSortedGoods(currGoods, initialGoods, sortField, reverseField) {
   return preparedGoods;
 }
 
+function compareFields(field1, field2) {
+  if (field1.length !== field2.length) {
+    return false;
+  }
+
+  for (let i = 0; i < field1.length; i += i + 1) {
+    if (field1[i] !== field2[i]) {
+      return false;
+    }
+  }
+
+  return true;
+}
+
 export const App = () => {
   const [sortField, setSortField] = useState('');
   const [reverseField, setReverseField] = useState(false);
-  const [currGoods, setCurrGoods] = useState(goodsFromServer);
   const initialGoods = [...goodsFromServer];
+  const [currGoods, setCurrGoods] = useState(initialGoods);
   const visibleGoods = getSortedGoods(
     currGoods,
     initialGoods,
@@ -105,14 +119,14 @@ export const App = () => {
           Reverse
         </button>
 
-        {sortField !== '' || reverseField === true ? (
+        {compareFields(initialGoods, currGoods) === false ? (
           <button
             type="button"
-            className="button is-danger is-light $"
+            className="button is-danger is-light"
             onClick={() => {
               setSortField('');
-              setCurrGoods(visibleGoods);
               setReverseField(false);
+              setCurrGoods(visibleGoods);
             }}
           >
             Reset
